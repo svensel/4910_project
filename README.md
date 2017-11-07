@@ -1,32 +1,23 @@
 #4910 Scheduling Application Project
 ## Synopsis
-
-At the top of the file there should be a short introduction and/ or overview that explains **what** the project is. This description should match descriptions added for package managers (Gemspec, package.json, etc.)
+This code repository is for a web application that is designed to make scheduling group meeting times for academics faster and easier.
 
 ## Code Example
-
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+TO COME
 
 ## Motivation
-
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
-
+After conducting a cognitive task analysis, we confirmed that students have difficulty making group schedules quickly. In order to avoid unecessary time spent on discussing when people can/cannot meet, we seek to automate this by running an algorthim over people's schedules that they have already created (or have been created for them). Ideally this will make finding group meeting times a cinch!
 ## Installation
-
-Provide code examples and explanations of how to get the project.
-
-## API Reference
-
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
-
-## Tests
-
-Describe and show how to run the tests with code examples.
+TO COME
 
 ## Contributors
-
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+Sam Vensel \
+Mathew Ferguson \
+Tyler McCall \
+Greg Francis \
+Ben Adams \
+Connor Bolick 
 
 ## License
 
-A short snippet describing the license (MIT, Apache, etc.)
+ABSOLUTELY NO WARRANTY
