@@ -11,4 +11,6 @@
 |
 */
 
-Route::get('/', 'BasicController@dashboard');
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
