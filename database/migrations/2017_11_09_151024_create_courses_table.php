@@ -18,6 +18,7 @@ class CreateCoursesTable extends Migration
             $table->string('class_name');
             $table->time('class_time')->nullable();
             $table->string('icon_name');
+            $table->string('bg_color');
             $table->timestamps();
         });
     }

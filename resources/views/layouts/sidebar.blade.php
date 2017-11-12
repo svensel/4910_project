@@ -22,7 +22,7 @@
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="">
-                    <i class="fa fa-fw fa-dashboard"></i>
+                    <i class="fa fa-fw fa-calendar"></i>
                     <span class="nav-link-text">Calendar</span>
                 </a>
             </li>
