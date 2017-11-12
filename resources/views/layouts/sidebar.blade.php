@@ -15,7 +15,7 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('groups')}}">
                     <i class="fa fa-fw fa-group"></i>
                     <span class="nav-link-text">Groups</span>
                 </a>

@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Auth;
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/groups', 'HomeController@groups')->name('groups');
+Route::post('/schedule{id}', 'HomeController@scheduleFinder')->name('scheduleFinder'); //probably a route like this that goes to the HomeController to generate schedules
 
 Route::get('/test', function(){
-    dd(Auth::user()->groups()->get());
+
 });
