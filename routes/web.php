@@ -22,3 +22,18 @@ Route::post('/schedule{id}', 'HomeController@scheduleFinder')->name('scheduleFin
 Route::get('/test', function(){
 
 });
+
+Route::get('/gcal/auth', function(){
+    $client = new Google_Client();
+    $client->setAuthConfig('../client_secrets.json');
+    $client->setAccessType("offline");        // offline access
+    $client->setIncludeGrantedScopes(true);   // incremental auth
+    $client->addScope(Google_Service_Calendar::CALENDAR_READONLY);
+    $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/gcal/authcallback');
+    $auth_url = $client->createAuthUrl();
+    header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
+});
+
+Route::get('/gcal/authcallback', function(){
+    print_r ($_GET);
+});
