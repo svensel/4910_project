@@ -2,8 +2,8 @@
     <a class="navbar-brand" href="">Scheduling Application</a>
     <div class="collapse navbar-collapse" id="navbarResponsive">
         <ul class="navbar-nav navbar-sidenav" id="exampleAccordion">
-            <li class="nav-item" data-toggle="tooltip" data-placement="right" title="Dashboard">
-                <a class="nav-link" href="">
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('home')}}">
                     <i class="fa fa-fw fa-dashboard"></i>
                     <span class="nav-link-text">Dashboard</span>
                 </a>
@@ -33,12 +33,13 @@
                 </a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="">
+                <a class="nav-link" href="{{route('help')}}">
                     <i class="fa fa-fw fa-question"></i>
                     <span class="nav-link-text">Help</span>
                 </a>
             </li>
         </ul>
         @include('layouts.topbar')
+
     </div>
 </nav>

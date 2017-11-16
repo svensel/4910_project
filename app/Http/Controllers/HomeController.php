@@ -43,6 +43,10 @@ class HomeController extends Controller
         return view('pages.groups');
     }
 
+    public function help(){
+        return view('pages.help');
+    }
+
     public function scheduleFinder(){
         $scheduleFinder = new ScheduleFinder();
         return view('welcome'); //TEMPORARY
