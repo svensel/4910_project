@@ -16,7 +16,13 @@ class CreateCoursesTable extends Migration
         Schema::create('courses', function (Blueprint $table) {
             $table->increments('id');
             $table->string('class_name');
-            $table->time('class_time')->nullable();
+            $table->time('start_time')->nullable();
+            $table->time('end_time')->nullable();
+            $table->boolean('mon');
+            $table->boolean('tues');
+            $table->boolean('wed');
+            $table->boolean('thur');
+            $table->boolean('fri');
             $table->string('icon_name');
             $table->string('bg_color');
             $table->timestamps();

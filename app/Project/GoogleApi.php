@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Project;
+use DateTime;
+use Google_Client;
+use Google_Service_Calendar;
 use Illuminate\Support\Facades\DB;
 
 /*
@@ -19,11 +22,11 @@ class GoogleApi
 
     private function refresh_token() {
         //check if not expired
-        if ($this->$googleClient->isAccessTokenExpired()) {
-            $this->$googleClient->refreshToken($this->$refreshToken);
-            $this->$accessToken = $this->$googleClient->getAccessToken();
+        if ($this->googleClient->isAccessTokenExpired()) {
+            $this->googleClient->refreshToken($this->refreshToken);
+            $this->accessToken = $this->googleClient->getAccessToken();
             DB::update('UPDATE users SET access_token = ? WHERE id = ?',
-             [base64_encode(serialize($this->$accessToken)), $this->uid]);
+             [base64_encode(serialize($this->accessToken)), $this->uid]);
         }
     }
 
@@ -31,17 +34,17 @@ class GoogleApi
         //fetch the token from the user
         $user = DB::select('SELECT * FROM users where id = ?', [$uid]);
 
-        if (!empty($users[0]->access_token)) {
+        if (!empty($user[0]->access_token)) {
             $this->uid = $uid;
-            $this->$accessToken = unserialize(base64_decode($users[0]->access_token));
-            $this->$refreshToken = $users[0]->refresh_token;
-            $this->$googleClient = new Google_Client();
-            $this->$googleClient->setAccessType('offline');
-            $this->$googleClient->setAuthConfig('../../client_secrets.json');
-            $this->$googleClient->addScope(Google_Service_Calendar::CALENDAR);
-            $this->$googleClient->setAccessToken($this->$accessToken);
+            $this->accessToken = unserialize(base64_decode($user[0]->access_token));
+            $this->refreshToken = $user[0]->refresh_token;
+            $this->googleClient = new Google_Client();
+            $this->googleClient->setAccessType('offline');
+            $this->googleClient->setAuthConfig('../../client_secrets.json');
+            $this->googleClient->addScope(Google_Service_Calendar::CALENDAR);
+            $this->googleClient->setAccessToken($this->accessToken);
             $this->refresh_token();
-            $this->$calendarService = new Google_Service_Calendar($this->$googleClient);
+            $this->calendarService = new Google_Service_Calendar($this->googleClient);
         } else {
             $this->$uid = -1;
         }
@@ -73,6 +76,6 @@ class GoogleApi
             'timeMin' => $week['start'],
         ];
         //fetch these events
-        $events = $this->$calendarService->events->listEvents('primary', $params);
+        $events = $this->calendarService->events->listEvents('primary', $params);
     }
 } 
