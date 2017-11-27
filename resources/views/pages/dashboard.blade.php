@@ -15,7 +15,7 @@
                     @if($numCourses > 1)
                         @for($i = 0; $i < 2; $i++)
                             <div class="col-xl-6 col-sm-6 mb-3">
-                                <div class="card text-white bg-{{$courses[$numCourses-1]['fa_color']}} o-hidden h-100">
+                                <div class="card text-white bg-{{$courses[$numCourses-1]['bg_color']}} o-hidden h-100">
                                     <div class="card-body">
                                         <div class="card-body-icon">
                                             <i class="fa fa-fw fa-{{$courses[$numCourses-1]['icon_name']}}"></i>
@@ -31,7 +31,7 @@
                         @endfor
                     @elseif($numCourses > -1)
                         <div class="col-xl-6 col-sm-6 mb-3">
-                            <div class="card text-white bg-{{$courses[$numCourses-1]['fa_color']}} o-hidden h-100">
+                            <div class="card text-white bg-{{$courses[$numCourses-1]['bg_color']}} o-hidden h-100">
                                 <div class="card-body">
                                     <div class="card-body-icon">
                                         <i class="fa fa-fw fa-{{$courses[$numCourses-1]['icon_name']}}"></i>
