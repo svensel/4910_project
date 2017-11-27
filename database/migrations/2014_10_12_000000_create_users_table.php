@@ -19,8 +19,8 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('google_cal_access')->default(false);
-            $table->string('access_token')->nullable();
-            $table->string('refresh_token')->nullable();
+            $table->longText('access_token')->nullable();
+            $table->longText('refresh_token')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
