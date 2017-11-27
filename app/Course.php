@@ -13,4 +13,16 @@ class Course extends Model
     public function groups(){
         return $this->hasMany('App\Group');
     }
+
+    public function getTimes(){
+        return [
+            'mon' => $this->mon,
+            'tues' => $this->tues,
+            'wed' => $this->wed,
+            'thur' => $this->thur,
+            'fri' => $this->fri,
+            'startTime' => $this->start_time,
+            'endTime' => $this->end_time
+        ];
+    }
 }

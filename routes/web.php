@@ -11,6 +11,7 @@
 |
 */
 
+use App\Course;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
