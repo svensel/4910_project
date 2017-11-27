@@ -4,20 +4,16 @@ namespace App\Project;
 use DateTime;
 use Google_Client;
 use Google_Service_Calendar;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
-/*
- * This class should contain functions for interacting with the google api for calendars
- * You likely need a login function that passes the users' credentials to the api
- * */
-
- //TODO: Fix for if somebody doesn't have google calendar??
 class GoogleApi
 {
     private $refreshToken;
     private $accessToken;
     private $googleClient;
     private $calendarService;
+    private $events = array();
     private $uid;
 
     private function refresh_token() {
@@ -40,7 +36,7 @@ class GoogleApi
             $this->refreshToken = $user[0]->refresh_token;
             $this->googleClient = new Google_Client();
             $this->googleClient->setAccessType('offline');
-            $this->googleClient->setAuthConfig('../../client_secrets.json');
+            $this->googleClient->setAuthConfig(storage_path('app/client_secrets.json'));
             $this->googleClient->addScope(Google_Service_Calendar::CALENDAR);
             $this->googleClient->setAccessToken($this->accessToken);
             $this->refresh_token();
@@ -58,13 +54,14 @@ class GoogleApi
         $result['start'] = $dto->setISODate($year, $week, 0)->format('Y-m-d\TH:i:sP');
         $dto->setTime(23,59,59);
         $result['end'] = $dto->setISODate($year, $week, 6)->format('Y-m-d\TH:i:sP');
+        return $result;
     }
 
     public function fetch_events() {
-        //no user (return NULL)
-        if ($uid = -1) {
+
+        if(Auth::user()->google_cal_access == false || $this->uid == -1)
             return NULL;
-        }
+
         //refresh the current token
         $this->refresh_token();
         //get the start and end of the week (sunday to saturday)
@@ -76,6 +73,20 @@ class GoogleApi
             'timeMin' => $week['start'],
         ];
         //fetch these events
-        $events = $this->calendarService->events->listEvents('primary', $params);
+        $events = $this->calendarService->events->listEvents('primary',$params);
+
+        foreach($events->items as $event){
+            list($startDate, $startTime) = preg_split('[T]', $event->start->dateTime);
+            list($endDate, $endTime) = preg_split('[T]', $event->end->dateTime);
+
+            $this->events[] = [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'startTime' => preg_split('[-]', $startTime)[0],
+                'endTime' => preg_split('[-]', $endTime)[0],
+            ];
+        }
+
+        return $this->events;
     }
 } 
