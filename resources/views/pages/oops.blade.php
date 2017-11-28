@@ -17,9 +17,6 @@
             <strong>If you disallow access to Google (TM) Calendars, be sure
                 to ALSO disallow access in your Google (TM) Account settings if you plan on re-allowing
                 this program's access to your Google (TM) Calendar information!</strong><br><br>
-            <strong>If you disallowed access in your Google (TM) Settings, but this page is showing
-                that you still have access, disallow access here, then try re-allowing it here.
-            </strong>
         </div>
 
     </div>

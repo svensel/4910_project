@@ -14,7 +14,7 @@ class GoogleApi
     private $googleClient;
     private $calendarService;
     private $events = array();
-    private $invalidState = true;
+    private $invalidState = false;
     private $uid;
 
     private function refresh_token() {
@@ -38,7 +38,7 @@ class GoogleApi
                 $this->refreshToken = $user[0]->refresh_token;
                 $this->googleClient = new Google_Client();
                 $this->googleClient->setAccessType('offline');
-                $this->googleClient->setAuthConfig('../client_secrets.json');
+                $this->googleClient->setAuthConfig(base_path('client_secrets.json'));
                 $this->googleClient->addScope(Google_Service_Calendar::CALENDAR);
                 $this->googleClient->setAccessToken($this->accessToken);
                 $this->refresh_token();
@@ -64,7 +64,7 @@ class GoogleApi
 
     public function fetch_events() {
 
-        if(Auth::user()->google_cal_access == false || $this->uid == -1)
+        if(!Auth::user()->google_cal_access || $this->uid == -1)
             return NULL;
 
         if($this->invalidState)

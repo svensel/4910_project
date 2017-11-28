@@ -37,7 +37,7 @@ Route::post('/gcal/auth', function(){
         return redirect('/settings');
 
     $client = new Google_Client();
-    $client->setAuthConfig('../client_secrets.json');
+    $client->setAuthConfig(base_path('client_secrets.json'));
     $client->setAccessType("offline");        // offline access
     $client->setIncludeGrantedScopes(true);   // incremental auth
     $client->addScope(Google_Service_Calendar::CALENDAR);
@@ -51,7 +51,7 @@ Route::get('/gcal/authcallback', function(){
     try{
         $auth = $_GET['code'];
         $client = new Google_Client();
-        $client->setAuthConfig('../client_secrets.json');
+        $client->setAuthConfig(base_path('client_secrets.json'));
         $token = $client->fetchAccessTokenWithAuthCode($auth);
 
         DB::update('UPDATE users SET refresh_token = ?, access_token = ? WHERE id = ?',
