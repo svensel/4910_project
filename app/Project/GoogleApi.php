@@ -14,6 +14,7 @@ class GoogleApi
     private $googleClient;
     private $calendarService;
     private $events = array();
+    private $invalidState = true;
     private $uid;
 
     private function refresh_token() {
@@ -30,19 +31,23 @@ class GoogleApi
         //fetch the token from the user
         $user = DB::select('SELECT * FROM users where id = ?', [$uid]);
 
-        if (!empty($user[0]->access_token)) {
-            $this->uid = $uid;
-            $this->accessToken = unserialize(base64_decode($user[0]->access_token));
-            $this->refreshToken = $user[0]->refresh_token;
-            $this->googleClient = new Google_Client();
-            $this->googleClient->setAccessType('offline');
-            $this->googleClient->setAuthConfig(storage_path('app/client_secrets.json'));
-            $this->googleClient->addScope(Google_Service_Calendar::CALENDAR);
-            $this->googleClient->setAccessToken($this->accessToken);
-            $this->refresh_token();
-            $this->calendarService = new Google_Service_Calendar($this->googleClient);
-        } else {
-            $this->$uid = -1;
+        try{
+            if (!empty($user[0]->access_token)) {
+                $this->uid = $uid;
+                $this->accessToken = unserialize(base64_decode($user[0]->access_token));
+                $this->refreshToken = $user[0]->refresh_token;
+                $this->googleClient = new Google_Client();
+                $this->googleClient->setAccessType('offline');
+                $this->googleClient->setAuthConfig('../client_secrets.json');
+                $this->googleClient->addScope(Google_Service_Calendar::CALENDAR);
+                $this->googleClient->setAccessToken($this->accessToken);
+                $this->refresh_token();
+                $this->calendarService = new Google_Service_Calendar($this->googleClient);
+            } else {
+                $this->$uid = -1;
+            }
+        }catch(\Exception $e){
+            $this->invalidState = true;
         }
     }
 
@@ -60,6 +65,9 @@ class GoogleApi
     public function fetch_events() {
 
         if(Auth::user()->google_cal_access == false || $this->uid == -1)
+            return NULL;
+
+        if($this->invalidState)
             return NULL;
 
         //refresh the current token

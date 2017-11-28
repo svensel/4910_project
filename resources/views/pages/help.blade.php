@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h1>Help</h1>
+            <h1>Help</h1><hr>
             <p>
                 <strong>To use the scheduling application:</strong>
             </p>

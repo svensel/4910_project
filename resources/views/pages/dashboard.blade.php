@@ -9,7 +9,7 @@
 
     <div class="row">
         <div class="col-12">
-            <h1>Dashboard</h1>
+            <h1>Dashboard</h1><hr>
             @while($numRows > 0)
                 <div class="row">
                     @if($numCourses > 1)

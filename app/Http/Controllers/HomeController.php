@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Project\ModelFinder;
 use App\Project\ScheduleFinder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class HomeController extends Controller
 {
@@ -45,6 +46,10 @@ class HomeController extends Controller
 
     public function help(){
         return view('pages.help');
+    }
+
+    public function settings(){
+        return view('pages.settings', ['user' => Auth::user()]);
     }
 
     public function scheduleFinder(){

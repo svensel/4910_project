@@ -38,6 +38,12 @@
                     <span class="nav-link-text">Help</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" href="{{route('settings')}}">
+                    <i class="fa fa-fw fa-gear"></i>
+                    <span class="nav-link-text">Settings</span>
+                </a>
+            </li>
         </ul>
         @include('layouts.topbar')
 
