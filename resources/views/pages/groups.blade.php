@@ -50,7 +50,10 @@
                                     <i class='fa-fw fa-group'></i>
                                 </div>
                                 <div class='mr-5'>{{$temp}}</div>
-                                <a class='card-footer text-white clearfix small z-1' href='#'>
+                                <a class='card-footer text-white clearfix small z-1' href='fun(grp_id)'>
+					<script hidden=hidden>function fun() => { 
+						
+					} </script>
                                     <span class='float-left'>Generate schedule?</span>
                                     <span class='float-right'><i class='fa fa-angle-right'></i></span>
                                 </a>
