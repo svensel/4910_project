@@ -27,13 +27,16 @@
                 </li>
             </ul>
             <hr>
-            <form id="gcalForm" method="POST" action="{{route('allowGcal')}}">
-                {{csrf_field()}}
-                <input title="Google Calendar Access" form="gcalForm" type="checkbox" name="allowAccess"
-                       @if($user->google_cal_access == true)checked="checked"@endif>
-                Allow access to Google (TM) Calendars for schedule creation? @if($user->google_cal_access)<strong>(Currently Allowed)</strong>@endif @if(!$user->google_cal_access)<strong>(Currently Disallowed)</strong>@endif <br><br>
-                <button class="btn btn-primary" type="submit">Submit changes</button>
-            </form>
+            <div class="col-lg-1"></div>
+            <div class="col-lg-11">
+                <form id="gcalForm" method="POST" action="{{route('allowGcal')}}">
+                    {{csrf_field()}}
+                    <input title="Google Calendar Access" form="gcalForm" type="checkbox" name="allowAccess"
+                           @if($user->google_cal_access == true)checked="checked"@endif>
+                    Allow access to Google (TM) Calendars for schedule creation? @if($user->google_cal_access)<strong>(Currently Allowed)</strong>@endif @if(!$user->google_cal_access)<strong>(Currently Disallowed)</strong>@endif <br><br>
+                    <button class="btn btn-primary" type="submit">Submit changes</button>
+                </form>
+            </div>
         </div>
 
     </div>

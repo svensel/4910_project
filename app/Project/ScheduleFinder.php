@@ -24,7 +24,7 @@ class ScheduleFinder
 
     public function generateCsv(array $times)
     {
-        $dateTime = strtotime(date('d-m-Y'));
+        $dateTime = strtotime(date('d-m-Y H:i:s'));
         $rowNum = 2;
 
         try {
@@ -35,13 +35,12 @@ class ScheduleFinder
             $csv->setActiveSheetIndex(0);
             $csv->getActiveSheet()->fromArray(['Available', 'Semi-Available'], null, 'A1');
             $objWriter = PHPExcel_IOFactory::createWriter($csv, 'Excel5');
-            $objWriter->save();
+            $objWriter->save(public_path('reports/Schedule'.$dateTime.'.xls'));
 
-            $objWriter->save(storage_path('reports/Schedule'.$dateTime.'.xls'));
-
-            return 'reports/Schedule'.$dateTime.'.xls';
+            return 'Schedule'.$dateTime.'.xls';
 
         } catch (\PHPExcel_Exception $e) {
+            return redirect()->back();
         }
     }
 }

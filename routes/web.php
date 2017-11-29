@@ -22,6 +22,7 @@ Route::get('/groups', 'HomeController@groups')->name('groups');
 Route::post('/schedule', 'HomeController@scheduleFinder')->name('scheduleFinder');
 Route::get('/help', 'HomeController@help')->name('help');
 Route::get('/settings', 'HomeController@settings')->name('settings');
+Route::get('/download/{filename}', 'HomeController@download')->name('download');
 
 Route::post('/gcal/auth', function(){
     $request = request()->toArray();
