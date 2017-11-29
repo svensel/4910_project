@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "ced2db0b30cc0d3eaed932e930c03303",
+    "content-hash": "f4db716b0af00497249c57e79a68c71d",
     "packages": [
         {
             "name": "dnoegel/php-xdg-base-dir",
@@ -1328,17 +1328,74 @@
             "time": "2017-09-27T21:40:39+00:00"
         },
         {
-            "name": "phpseclib/phpseclib",
-            "version": "2.0.7",
+            "name": "phpoffice/phpexcel",
+            "version": "1.8.1",
             "source": {
                 "type": "git",
-                "url": "https://github.com/phpseclib/phpseclib.git",
-                "reference": "f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b"
+                "url": "https://github.com/PHPOffice/PHPExcel.git",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b",
-                "reference": "f4b6a522dfa1fd1e477c9cfe5909d5b31f098c0b",
+                "url": "https://api.github.com/repos/PHPOffice/PHPExcel/zipball/372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "reference": "372c7cbb695a6f6f1e62649381aeaa37e7e70b32",
+                "shasum": ""
+            },
+            "require": {
+                "ext-xml": "*",
+                "ext-xmlwriter": "*",
+                "php": ">=5.2.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PHPExcel": "Classes/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL"
+            ],
+            "authors": [
+                {
+                    "name": "Maarten Balliauw",
+                    "homepage": "http://blog.maartenballiauw.be"
+                },
+                {
+                    "name": "Mark Baker"
+                },
+                {
+                    "name": "Franck Lefevre",
+                    "homepage": "http://blog.rootslabs.net"
+                },
+                {
+                    "name": "Erik Tilt"
+                }
+            ],
+            "description": "PHPExcel - OpenXML - Read, Create and Write Spreadsheet documents in PHP - Spreadsheet engine",
+            "homepage": "http://phpexcel.codeplex.com",
+            "keywords": [
+                "OpenXML",
+                "excel",
+                "php",
+                "spreadsheet",
+                "xls",
+                "xlsx"
+            ],
+            "time": "2015-05-01T07:00:55+00:00"
+        },
+        {
+            "name": "phpseclib/phpseclib",
+            "version": "2.0.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/phpseclib/phpseclib.git",
+                "reference": "c9a3fe35e20eb6eeaca716d6a23cde03f52d1558"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/phpseclib/phpseclib/zipball/c9a3fe35e20eb6eeaca716d6a23cde03f52d1558",
+                "reference": "c9a3fe35e20eb6eeaca716d6a23cde03f52d1558",
                 "shasum": ""
             },
             "require": {
@@ -1417,7 +1474,7 @@
                 "x.509",
                 "x509"
             ],
-            "time": "2017-10-23T05:04:54+00:00"
+            "time": "2017-11-29T06:38:08+00:00"
         },
         {
             "name": "psr/cache",
