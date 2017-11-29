@@ -54,7 +54,7 @@ class HomeController extends Controller
 
     public function scheduleFinder(){
         $scheduleFinder = new ScheduleFinder();
-        return view('welcome'); //TEMPORARY
+        return view('test', ['filename' => $scheduleFinder->generateCsv([])]);
 
         //Something like what is below
         //return view('pages.schedule', $scheduleFinder->generateSchedule())

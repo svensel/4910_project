@@ -2,8 +2,14 @@
 
 namespace App\Project;
 
+
+use PHPExcel;
+use PHPExcel_IOFactory;
+
 class ScheduleFinder
+
 {
+
     /*
      * This class should contain the algorithm to generate the schedules
      * This class should use the GoogleApi class when appropriate to include in the
@@ -15,4 +21,28 @@ class ScheduleFinder
     public function __construct()
     {
     }
+
+    public function generateCsv(array $times)
+    {
+        $dateTime = strtotime(date('d-m-Y'));
+        $rowNum = 2;
+
+        try {
+            $csv = new PHPExcel();
+
+            $csv->getProperties()->setTitle(' Time sheet');
+
+            $csv->setActiveSheetIndex(0);
+            $csv->getActiveSheet()->fromArray(['Available', 'Semi-Available'], null, 'A1');
+            $objWriter = PHPExcel_IOFactory::createWriter($csv, 'Excel5');
+            $objWriter->save();
+
+            $objWriter->save(storage_path('reports/Schedule'.$dateTime.'.xls'));
+
+            return 'reports/Schedule'.$dateTime.'.xls';
+
+        } catch (\PHPExcel_Exception $e) {
+        }
+    }
 }
+
