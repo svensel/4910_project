@@ -44,25 +44,129 @@ class ScheduleFinder
 
 
         //dd($times);
-
         foreach($allCourses as $courseArray){
             foreach($courseArray[0] as $courseData){
-                $course = $courseData['original'];
-                dd($course);
+                $course = $courseData->toArray();
+
+                if($course['mon'] == 1){
+                    foreach($times['available'][0]['times'] as $availTimeSlot){
+                        //dd($availTimeSlot['start']);
+                        if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
+                            $curIndex = array_search($availTimeSlot, $times['available'][0]['times']);
+                            $newTimeSlot = ['start' => $course['end_time'], 'end' => $availTimeSlot['end']];
+                            $availTimeSlot['end'] = $course['start_time'];
+                            array_splice($times['available'][0]['times'], $curIndex, 0, $newTimeSlot);
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
+                            $availTimeSlot['end'] = $course['start_time'];
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['start'], $course['start_time']) > 0){ //partially inside leading
+                            $availTimeSlot['start'] = $course['end_time'];
+                        }
+                        //else = completely outside -> do nothing
+                    }
+                }
+                if($course['tues'] == 1){
+                    foreach($times['available'][1]['times'] as $availTimeSlot){
+                        if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
+                            $curIndex = array_search($availTimeSlot, $times['available'][0]['times']);
+                            $newTimeSlot = ['start' => $course['end_time'], 'end' => $availTimeSlot['end']];
+                            $availTimeSlot['end'] = $course['start_time'];
+                            array_splice($times['available'][0]['times'], $curIndex, 0, $newTimeSlot);
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
+                            $availTimeSlot['end'] = $course['start_time'];
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['start'], $course['start_time']) > 0){ //partially inside leading
+                            $availTimeSlot['start'] = $course['end_time'];
+                        }
+                        //else = completely outside -> do nothing
+                    }
+                }
+                if($course['wed'] == 1){
+                    foreach($times['available'][2]['times'] as $availTimeSlot){
+                        if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
+                            $curIndex = array_search($availTimeSlot, $times['available'][0]['times']);
+                            $newTimeSlot = ['start' => $course['end_time'], 'end' => $availTimeSlot['end']];
+                            $availTimeSlot['end'] = $course['start_time'];
+                            array_splice($times['available'][0]['times'], $curIndex, 0, $newTimeSlot);
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
+                            $availTimeSlot['end'] = $course['start_time'];
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['start'], $course['start_time']) > 0){ //partially inside leading
+                            $availTimeSlot['start'] = $course['end_time'];
+                        }
+                        //else = completely outside -> do nothing
+                    }
+                }
+                if($course['thur'] == 1){
+                    foreach($times['available'][3]['times'] as $availTimeSlot){
+                        if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
+                            $curIndex = array_search($availTimeSlot, $times['available'][0]['times']);
+                            $newTimeSlot = ['start' => $course['end_time'], 'end' => $availTimeSlot['end']];
+                            $availTimeSlot['end'] = $course['start_time'];
+                            array_splice($times['available'][0]['times'], $curIndex, 0, $newTimeSlot);
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
+                            $availTimeSlot['end'] = $course['start_time'];
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['start'], $course['start_time']) > 0){ //partially inside leading
+                            $availTimeSlot['start'] = $course['end_time'];
+                        }
+                        //else = completely outside -> do nothing
+                    }
+                }
+                if($course['fri'] == 1){
+                    foreach($times['available'][4]['times'] as $availTimeSlot){
+                        if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
+                            $curIndex = array_search($availTimeSlot, $times['available'][0]['times']);
+                            $newTimeSlot = ['start' => $course['end_time'], 'end' => $availTimeSlot['end']];
+                            $availTimeSlot['end'] = $course['start_time'];
+                            array_splice($times['available'][0]['times'], $curIndex, 0, $newTimeSlot);
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
+                            $availTimeSlot['end'] = $course['start_time'];
+                        }
+                        else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
+                            $this->compareTimeStr($availTimeSlot['start'], $course['start_time']) > 0){ //partially inside leading
+                            $availTimeSlot['start'] = $course['end_time'];
+                        }
+                        //else = completely outside -> do nothing
+                    }
+                }
             }
         }
 
+
+        dd($times);
+        return($times);
+
     }
 
-    public function compareTimeStr(string $t1, string $t2){
-        if((int)substr($t1, 0, 2) != (int)substr($t2, 0, 2)){
-            return (int)substr($t1, 0, 2) - (int)substr($t2, 0, 2);
+    public function compareTimeStr($t1, $t2){ // 0 if same, + if t1 is after t2, - if t1 is before t2
+        if(intval(substr($t1, 0, 2)) != intval(substr($t2, 0, 2))){
+            return intval(substr($t1, 0, 2)) - intval(substr($t2, 0, 2));
         }
-        else if((int)substr($t1, 3, 2) != (int)substr($t2, 3, 2)){
-            return (int)substr($t1, 3, 2) - (int)substr($t2, 3, 2);
+        else if(intval(substr($t1, 3, 2)) != intval(substr($t2, 3, 2))){
+            return intval(substr($t1, 3, 2)) - intval(substr($t2, 3, 2));
         }
-        else if((int)substr($t1, 6, 2) != (int)substr($t2, 6, 2)){
-            return (int)substr($t1, 6, 2) - (int)substr($t2, 6, 2);
+        else if(intval(substr($t1, 6, 2)) != intval(substr($t2, 6, 2))){
+            return intval(substr($t1, 6, 2)) - intval(substr($t2, 6, 2));
         }
         return 0;
     }
