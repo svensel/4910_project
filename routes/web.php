@@ -75,3 +75,22 @@ Route::get('/events', function(){
    $api = new \App\Project\GoogleApi(Auth::user()->id);
    dd($api->fetch_events());
 });
+
+Route::get('/test', function(){
+    $times = json_encode([
+        [
+            "id" => "5",
+            "text" => 'TEST',
+            "start" => '2017-11-30T09:00:00',
+            "end" => '2017-11-30T10:00:00'
+        ],
+        [
+            "id" => "7",
+            "text" => 'TEST2',
+            "start" => '2017-11-30T11:00:00',
+            "end" => '2017-11-30T13:00:00'
+        ],
+    ]);
+
+   return view('cal', ['times' => $times]);
+});
