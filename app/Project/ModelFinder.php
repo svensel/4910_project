@@ -19,6 +19,10 @@ class ModelFinder
         return Auth::user();
     }
 
+    public static function getCoursesFromUser($user){
+        return $user->courses();
+    }
+
     public static function getAuthUserGroups(){
         return Auth::user()->groups()->get();
     }

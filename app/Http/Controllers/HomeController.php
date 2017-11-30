@@ -53,7 +53,9 @@ class HomeController extends Controller
     }
 
     public function scheduleFinder(){
+        $request = request()->toArray();
         $scheduleFinder = new ScheduleFinder();
+        $scheduleFinder->generateCalendar($request['groupId']);
         return view('welcome'); //TEMPORARY
 
         //Something like what is below
