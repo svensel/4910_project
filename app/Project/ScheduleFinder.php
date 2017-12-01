@@ -36,14 +36,13 @@ class ScheduleFinder
                 $i++;
             }
         }
-
+        
         dd($this->times);
         return $this->times;
 
     }
 
     private function findCourseOverlaps($course, $dayIndex){
-        static $i = 0;
         foreach($this->times['available'][$dayIndex]['times'] as &$availTimeSlot){
             if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
                 $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
@@ -52,7 +51,7 @@ class ScheduleFinder
                 $this->times['available'][$dayIndex]['times'][] = $newTimeSlot;
             }
             else if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
-                $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) < 0){ //partially inside trailing
+                $this->compareTimeStr($availTimeSlot['end'], $course['start_time']) > 0){ //partially inside trailing
                 $availTimeSlot['end'] = $course['start_time'];
             }
             else if($this->compareTimeStr($availTimeSlot['start'], $course['end_time']) < 0 &&
@@ -61,9 +60,6 @@ class ScheduleFinder
             }
             //else = completely outside -> do nothing
         }
-        /*stops working on iteration 6
-         * if(5 == $i++)
-            dd($this->times['available'][$dayIndex]['times'])*/;
     }
 
     private  function compareTimeStr($t1, $t2){ // 0 if same, + if t1 is after t2, - if t1 is before t2
