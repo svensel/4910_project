@@ -12,7 +12,7 @@
 */
 
 use App\Course;
-use App\Project\ModelFinder;
+use App\Project\ScheduleFinder;
 use Illuminate\Support\Facades\Auth;
 
 Auth::routes();
@@ -23,6 +23,7 @@ Route::get('/groups', 'HomeController@groups')->name('groups');
 Route::post('/schedule', 'HomeController@scheduleFinder')->name('scheduleFinder');
 Route::get('/help', 'HomeController@help')->name('help');
 Route::get('/settings', 'HomeController@settings')->name('settings');
+Route::get('/download/{filename}', 'HomeController@download')->name('download');
 
 Route::post('/gcal/auth', function(){
     $request = request()->toArray();
@@ -74,4 +75,47 @@ Route::get('/gcal/authcallback', function(){
 Route::get('/events', function(){
    $api = new \App\Project\GoogleApi(Auth::user()->id);
    dd($api->fetch_events());
+});
+
+Route::get('/test', function(){
+    $times = json_encode([
+        [
+            "id" => "5",
+            "text" => 'TEST1',
+            "start" => '2017-11-30T09:00:00',
+            "end" => '2017-11-30T10:00:00'
+        ],
+        [
+            "id" => "6",
+            "text" => 'TEST2',
+            "start" => '2017-11-30T11:00:00',
+            "end" => '2017-11-30T13:00:00'
+        ],
+        [
+            "id" => "7",
+            "text" => 'TEST3',
+            "start" => '2017-11-27T09:30:00',
+            "end" => '2017-11-27T10:00:00'
+        ],
+        [
+            "id" => "8",
+            "text" => 'TEST4',
+            "start" => '2017-12-02T07:00:00',
+            "end" => '2017-12-02T18:00:00'
+        ],
+        [
+            "id" => "9",
+            "text" => 'TEST5',
+            "start" => '2017-12-01T04:00:00',
+            "end" => '2017-12-01T15:00:00'
+        ],
+        [
+            "id" => "10",
+            "text" => 'TEST6',
+            "start" => '2017-11-28T08:00:00',
+            "end" => '2017-11-28T08:30:00'
+        ]
+    ]);
+    $scheduleFinder = new ScheduleFinder();
+    return view('cal', ['times' => $times, 'filename' => $scheduleFinder->generateCsv([])]);
 });
