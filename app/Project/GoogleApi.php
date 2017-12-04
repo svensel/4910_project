@@ -58,7 +58,7 @@ class GoogleApi
         $dto->setTime(0,0,0);
         $result['start'] = $dto->setISODate($year, $week, 0)->format('Y-m-d\TH:i:sP');
         $dto->setTime(23,59,59);
-        $result['end'] = $dto->setISODate($year, $week+1, 6)->format('Y-m-d\TH:i:sP');
+        $result['end'] = $dto->setISODate($year, $week, 6)->format('Y-m-d\TH:i:sP');
         return $result;
     }
 
