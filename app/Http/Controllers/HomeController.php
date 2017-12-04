@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Project\ModelFinder;
 use App\Project\ScheduleFinder;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
 {
@@ -54,17 +52,11 @@ class HomeController extends Controller
         return view('pages.settings', ['user' => Auth::user()]);
     }
 
-    public function download($filename){
-        $headers = array(
-            'Content-Type' => 'application/csv',
-            'Content-Disposition' => 'attachment; filename='.$filename,
-        );
-        return Response::download(public_path('reports/'.$filename), $filename, $headers );
-    }
-
     public function scheduleFinder(){
+        $request = request()->toArray();
         $scheduleFinder = new ScheduleFinder();
-        return view('test', ['filename' => $scheduleFinder->generateCsv([])]);
+        $scheduleFinder->generateCalendar($request['groupId']);
+        return view('welcome'); //TEMPORARY
 
         //Something like what is below
         //return view('pages.schedule', $scheduleFinder->generateSchedule())
