@@ -51,10 +51,10 @@ class GoogleApi
         }
     }
 
-    private function get_current_week() {
+    private function get_current_week($offset = 0) {
         $dto = new DateTime();
         $year = $dto->format("Y");
-        $week = $dto->format("W");
+        $week = $dto->format("W") + $offset;
         $dto->setTime(0,0,0);
         $result['start'] = $dto->setISODate($year, $week, 0)->format('Y-m-d\TH:i:sP');
         $dto->setTime(23,59,59);
@@ -63,7 +63,7 @@ class GoogleApi
     }
 
     public function fetch_events() {
-
+        $totalEvents = array();
         if(!Auth::user()->google_cal_access || $this->uid == -1)
             return NULL;
 
@@ -94,7 +94,36 @@ class GoogleApi
                 'endTime' => preg_split('[-]', $endTime)[0],
             ];
         }
+        //add this week [0] to the array
+        $totalEvents[] = $this->events;
 
-        return $this->events;
+        //get the next week
+        $week = $this->get_current_week(1);
+        //set request params
+        $params = [
+            'singleEvents' => true,
+            'timeMax' => $week['end'],
+            'timeMin' => $week['start'],
+        ];
+        //fetch these events
+        $events = $this->calendarService->events->listEvents('primary',$params);
+
+        foreach($events->items as $event){
+            list($startDate, $startTime) = preg_split('[T]', $event->start->dateTime);
+            list($endDate, $endTime) = preg_split('[T]', $event->end->dateTime);
+
+            $this->events[] = [
+                'startDate' => $startDate,
+                'endDate' => $endDate,
+                'startTime' => preg_split('[-]', $startTime)[0],
+                'endTime' => preg_split('[-]', $endTime)[0],
+            ];
+        }
+
+        //add the other week [1] to the array
+        $totalEvents[] = $this->events;
+
+        //return the whole thing
+        return $totalEvents;
     }
 } 
