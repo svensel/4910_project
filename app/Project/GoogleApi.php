@@ -90,12 +90,15 @@ class GoogleApi
             $this->events[] = [
                 'startDate' => $startDate,
                 'endDate' => $endDate,
+                'startDayName' => date('D', strtotime($startDate)),
+                'endDayName' => date('D', strtotime($endDate)),
                 'startTime' => preg_split('[-]', $startTime)[0],
                 'endTime' => preg_split('[-]', $endTime)[0],
             ];
         }
         //add this week [0] to the array
         $totalEvents[] = $this->events;
+        $this->events = [];
 
         //get the next week
         $week = $this->get_current_week(1);
@@ -115,6 +118,8 @@ class GoogleApi
             $this->events[] = [
                 'startDate' => $startDate,
                 'endDate' => $endDate,
+                'startDayName' => date('D', strtotime($startDate)),
+                'endDayName' => date('D', strtotime($endDate)),
                 'startTime' => preg_split('[-]', $startTime)[0],
                 'endTime' => preg_split('[-]', $endTime)[0],
             ];

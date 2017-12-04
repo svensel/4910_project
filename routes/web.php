@@ -78,6 +78,7 @@ Route::get('/events', function(){
 });
 
 Route::get('/test', function(){
+
     $times = json_encode([
         [
             "id" => "5",
@@ -117,5 +118,5 @@ Route::get('/test', function(){
         ]
     ]);
     $scheduleFinder = new ScheduleFinder();
-    return view('cal', ['times' => $times, 'filename' => $scheduleFinder->generateCsv([])]);
+    return view('cal', ['times' => $times, 'filename' => 'name']);
 });

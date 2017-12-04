@@ -24,7 +24,7 @@ class ScheduleFinder
             $coursesToAdd = ModelFinder::getCoursesFromUser($user)->get()->toArray();
             $this->allCourses = array_merge($this->allCourses, $coursesToAdd);
             $api = new GoogleApi($user->id);
-            $googleTimes = $api->fetch_events();
+            //$googleTimes = $api->fetch_events();
         }
 
         foreach($this->allCourses as $course){
