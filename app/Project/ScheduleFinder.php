@@ -8,6 +8,7 @@ class ScheduleFinder
     private $allCourses = [];
     private $googleTimes;
     private $courseDays = ['mon', 'tues', 'wed', 'thur', 'fri'];
+    private $dayIndex = ['Mon' => 0 , 'Tue' => 1, 'Wed' => 2, 'Thu' => 3, 'Fri' => 4];
 
     public function __construct(){
         $this->times['available'][0] = ['day' => 'M','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
@@ -19,14 +20,19 @@ class ScheduleFinder
 
     public function generateCalendar($groupId){
         $users = ModelFinder::getUsersFromGroup($groupId);
-
+        $horribleHack = 0;
         foreach($users as $user) {
             $coursesToAdd = ModelFinder::getCoursesFromUser($user)->get()->toArray();
             $this->allCourses = array_merge($this->allCourses, $coursesToAdd);
             $api = new GoogleApi($user->id);
-            //$googleTimes = $api->fetch_events();
+            if ($horribleHack == 0) {
+                $googleTimes = $api->fetch_events();
+                $horribleHack++;
+            }
+            //dd($googleTimes);
         }
 
+        //dd($googleTimes);
         foreach($this->allCourses as $course){
             $i = 0;
             foreach($this->courseDays as $day){
@@ -36,10 +42,46 @@ class ScheduleFinder
                 $i++;
             }
         }
-        
-        dd($this->times);
-        return $this->times;
 
+        $week2Times = unserialize(serialize($this->times));
+
+        //dd($week2Times);
+
+        foreach($googleTimes[0] as $busyTime){//first week
+            $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $this->times);
+        }
+
+        foreach($googleTimes[1] as $busyTime){//second week
+            $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $week2Times);
+        }
+
+        $combinedTimes = [];
+        $combinedTimes[0] = $this->times;
+        $combinedTimes[1] = $week2Times;
+        //dd($combinedTimes);
+        return $combinedTimes; //combinedTimes[0] is current week, combinedTimes[1] is next week
+
+    }
+
+    private function trimAvailableTimeWithEvent($event, $dayIndex, $times){
+        //dd($event);
+        foreach($times['available'][$dayIndex]['times'] as &$availTimeSlot){
+            if($this->compareTimeStr($availTimeSlot['start'], $event['startTime']) < 0 &&
+                $this->compareTimeStr($availTimeSlot['end'], $event['endTime']) > 0){ //completely inside (divide)
+                $newTimeSlot = ['start' => $event['endTime'], 'end' => $availTimeSlot['end']];
+                $availTimeSlot['end'] = $event['startTime'];
+                $times['available'][$dayIndex]['times'][] = $newTimeSlot;
+            }
+            else if($this->compareTimeStr($availTimeSlot['start'], $event['startTime']) < 0 &&
+                $this->compareTimeStr($availTimeSlot['end'], $event['startTime']) > 0){ //partially inside trailing
+                $availTimeSlot['end'] = $event['startTime'];
+            }
+            else if($this->compareTimeStr($availTimeSlot['start'], $event['endTime']) < 0 &&
+                $this->compareTimeStr($availTimeSlot['start'], $event['startTime']) > 0){ //partially inside leading
+                $availTimeSlot['start'] = $event['endTime'];
+            }
+            //else = completely outside -> do nothing
+        }
     }
 
     private function findCourseOverlaps($course, $dayIndex){
