@@ -20,19 +20,16 @@ class ScheduleFinder
 
     public function generateCalendar($groupId){
         $users = ModelFinder::getUsersFromGroup($groupId);
-        $horribleHack = 0;
         foreach($users as $user) {
             $coursesToAdd = ModelFinder::getCoursesFromUser($user)->get()->toArray();
             $this->allCourses = array_merge($this->allCourses, $coursesToAdd);
-            $api = new GoogleApi($user->id);
-            if ($horribleHack == 0) {
+            if ($user->google_cal_access == 1) {
+                $api = new GoogleApi($user->id);
                 $googleTimes = $api->fetch_events();
-                $horribleHack++;
+                //dd($googleTimes);
             }
-            //dd($googleTimes);
         }
 
-        //dd($googleTimes);
         foreach($this->allCourses as $course){
             $i = 0;
             foreach($this->courseDays as $day){
