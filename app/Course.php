@@ -6,15 +6,18 @@ use Illuminate\Database\Eloquent\Model;
 
 class Course extends Model
 {
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany('App\User');
     }
 
-    public function groups(){
+    public function groups()
+    {
         return $this->hasMany('App\Group');
     }
 
-    public function getTimes(){
+    public function getTimes()
+    {
         return [
             'mon' => $this->mon,
             'tues' => $this->tues,

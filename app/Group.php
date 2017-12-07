@@ -6,11 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Group extends Model
 {
-    public function course(){
+    public function course()
+    {
         return $this->belongsTo('App\Course');
     }
 
-    public function users(){
+    public function users()
+    {
         return $this->belongsToMany('App\User');
     }
 }

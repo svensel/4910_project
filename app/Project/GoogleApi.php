@@ -17,7 +17,8 @@ class GoogleApi
     private $invalidState = false;
     private $uid;
 
-    private function refresh_token() {
+    private function refresh_token()
+    {
         //check if not expired
         if ($this->googleClient->isAccessTokenExpired()) {
             $this->googleClient->refreshToken($this->refreshToken);
@@ -27,7 +28,8 @@ class GoogleApi
         }
     }
 
-    public function __construct($uid){
+    public function __construct($uid)
+    {
         //fetch the token from the user
         $user = DB::select('SELECT * FROM users where id = ?', [$uid]);
 
@@ -51,7 +53,8 @@ class GoogleApi
         }
     }
 
-    private function get_current_week($offset = 0) {
+    private function get_current_week($offset = 0)
+    {
         $dto = new DateTime();
         $year = $dto->format("Y");
         $week = $dto->format("W") + $offset;
@@ -62,7 +65,8 @@ class GoogleApi
         return $result;
     }
 
-    public function fetch_events() {
+    public function fetch_events()
+    {
         $totalEvents = array();
         if(!Auth::user()->google_cal_access || $this->uid == -1)
             return NULL;
