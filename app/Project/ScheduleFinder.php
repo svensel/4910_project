@@ -61,6 +61,12 @@ class ScheduleFinder
         }
 
         $combinedTimes = [];
+        $sun1 = $this->times['available'][6];
+        $sun2 = $week2Times['available'][6];
+        unset($this->times['available'][6]);
+        unset($week2Times['available'][6]);
+        array_unshift($this->times['available'], $sun1);
+        array_unshift($week2Times['available'], $sun2);
         $combinedTimes[0] = $this->times;
         $combinedTimes[1] = $week2Times;
         return $combinedTimes; //combinedTimes[0] is current week, combinedTimes[1] is next week

@@ -119,7 +119,7 @@ class HomeController extends Controller
 
         $convertedTimes = array();
         $id = 1;
-
+        
         foreach($availableTimes as $week){
             foreach($week['available'] as $day){
                 foreach($day['times'] as $time){
