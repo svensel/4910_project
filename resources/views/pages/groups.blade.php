@@ -28,7 +28,7 @@
                                 <div class='card-body'>
                                     <div class='card-body-icon'><i class='fa fa-fw fa-group'></i></div>
                                     <div class='mr-5'>Group Name: {{$groups[$i]->name}}</div><hr>
-                                    <div class="mr-5">Class Name: {{$groups[$i]->course->get()[0]->class_name}}</div><hr>
+                                    <div class="mr-5">Class Name: {{$groups[$i]->course->class_name}}</div><hr>
                                     <div class="mr-5">Members:</div><br>
                                     @foreach($groups[$i]->users()->get() as $user)
                                         <div class="mr-5">{{$user->name}}</div>

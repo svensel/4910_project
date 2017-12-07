@@ -16,7 +16,9 @@
             <ol>
                 <li> Click the groups tab </li>
                 <li> Select a course from the list of courses that appear </li>
-                <li> Select "generate schedule" </li>
+                <li> Select "Generate schedule?" </li>
+                <li> The next page shows everything you need. You can also download a spreadsheet </li>
+                <li> If you want to add your google calendar, navigate to settings then follow the directions there </li>
             </ol>
         </div>
 

@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Project\ModelFinder;
 use App\Project\ScheduleFinder;
+use Google_Client;
+use Google_Service_Calendar;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
@@ -53,6 +56,53 @@ class HomeController extends Controller
     public function settings()
     {
         return view('pages.settings', ['user' => Auth::user()]);
+    }
+
+    public function allowGcal()
+    {
+        $request = request()->toArray();
+        $user = Auth::user();
+        if(!isset($request['allowAccess'])){
+            $user->google_cal_access = false;
+            $user->access_token = null;
+            $user->refresh_token = null;
+            $user->save();
+            return redirect('/settings')->with('Success');
+        }
+        elseif($user->google_cal_access == true)
+            return redirect('/settings');
+
+        $client = new Google_Client();
+        $client->setAuthConfig(base_path('client_secrets.json'));
+        $client->setAccessType("offline");        // offline access
+        $client->setIncludeGrantedScopes(true);   // incremental auth
+        $client->addScope(Google_Service_Calendar::CALENDAR);
+        $client->setRedirectUri('http://' . $_SERVER['HTTP_HOST'] . '/gcal/authcallback');
+        $auth_url = $client->createAuthUrl();
+        header('Location: ' . filter_var($auth_url, FILTER_SANITIZE_URL));
+    }
+
+    public function callBack()
+    {
+        try{
+            $auth = $_GET['code'];
+            $client = new Google_Client();
+            $client->setAuthConfig(base_path('client_secrets.json'));
+            $token = $client->fetchAccessTokenWithAuthCode($auth);
+
+            DB::update('UPDATE users SET refresh_token = ?, access_token = ? WHERE id = ?',
+                [$token['refresh_token'], base64_encode(serialize($token)), Auth::id()]);
+            Auth::user()->google_cal_access = true;
+            Auth::user()->save();
+
+            echo  "<script type='text/javascript'>";
+            echo "window.close();";
+            echo "</script>";
+
+            return redirect('/settings');
+        }catch(\Exception $e){
+            return view('pages.oops');
+        }
     }
 
     public function scheduleFinder()
