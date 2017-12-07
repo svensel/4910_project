@@ -31,7 +31,7 @@ class ScheduleFinder
             $this->allCourses = array_merge($this->allCourses, $coursesToAdd);
             if ($user->google_cal_access == 1) {
                 $api = new GoogleApi($user->id);
-                $googleTimes = $api->fetch_events();
+                $googleTimes[] = $api->fetch_events();
             }
         }
 
@@ -49,12 +49,15 @@ class ScheduleFinder
         $this->times['available'][6] = ['day' => 'Sun','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
         $week2Times = unserialize(serialize($this->times));
 
-        foreach($googleTimes[0] as $busyTime){//first week
-            $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $this->times);
+        foreach($googleTimes as $week){//first week
+            foreach($week[0] as $busyTime)
+                $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $this->times);
         }
 
-        foreach($googleTimes[1] as $busyTime){//second week
-            $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $week2Times);
+        foreach($googleTimes as $week){//second week
+            foreach($week[1] as $busyTime){
+                $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $week2Times);
+            }
         }
 
         $combinedTimes = [];

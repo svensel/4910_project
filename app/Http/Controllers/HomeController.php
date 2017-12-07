@@ -125,7 +125,7 @@ class HomeController extends Controller
                 foreach($day['times'] as $time){
                     $convertedTimes[] = [
                         'id' => $id++,
-                        'text' => 'Available Time',
+                        'text' => 'Available Time '.$time['start'].'-'.$time['end'],
                         'start' => date('Y-m-d', $startOfWeek).'T'.$time['start'],
                         'end' => date('Y-m-d', $startOfWeek).'T'.$time['end'],
                     ];
