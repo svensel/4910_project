@@ -132,9 +132,8 @@ class ScheduleFinder
     public function generateSpreadsheet(array $times, $startDate, $endDate)
     {
         $headers = [];
-        $this->times['available'][0] = ['day' => 'M','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
         $filename = strtotime(date('d-m-Y H:i:s')).'.xls';
-
+        
         for($i = $startDate; $i < $endDate; $i += 86400)
             $headers[] = date('d-M-Y', $i);
 
