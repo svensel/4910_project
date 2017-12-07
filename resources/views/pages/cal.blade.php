@@ -36,6 +36,7 @@
         dp.events.list = JSON.parse(i);
         dp.heightSpec = "Full";
         dp.eventMoveHandling = "Disabled";
+        dp.eventResizeHandling = "Disabled";
         dp.init();
     </script>
 @endsection
