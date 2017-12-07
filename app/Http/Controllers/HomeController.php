@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Project\ModelFinder;
 use App\Project\ScheduleFinder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Response;
 
 class HomeController extends Controller
 {
@@ -40,25 +40,61 @@ class HomeController extends Controller
         ]);
     }
 
-    public function groups(){
+    public function groups()
+    {
         return view('pages.groups');
     }
 
-    public function help(){
+    public function help()
+    {
         return view('pages.help');
     }
 
-    public function settings(){
+    public function settings()
+    {
         return view('pages.settings', ['user' => Auth::user()]);
     }
 
-    public function scheduleFinder(){
+    public function scheduleFinder()
+    {
         $request = request()->toArray();
         $scheduleFinder = new ScheduleFinder();
-        $scheduleFinder->generateCalendar($request['groupId']);
-        return view('welcome'); //TEMPORARY
+        $currentDay = date('w');
+        $startOfWeek = strtotime(date('Y-m-d'));
+        $startOfWeek = $startOfWeek - (86400 * $currentDay);
+        $startOfNextWeek = $startOfWeek + 604800;
 
-        //Something like what is below
-        //return view('pages.schedule', $scheduleFinder->generateSchedule())
+        $availableTimes = $scheduleFinder->generateCalendar($request['groupId']);
+        $filename = $scheduleFinder->generateSpreadsheet($availableTimes, $startOfWeek, $startOfNextWeek);
+
+        $convertedTimes = array();
+        $id = 1;
+
+        foreach($availableTimes as $week){
+            foreach($week['available'] as $day){
+                foreach($day['times'] as $time){
+                    $convertedTimes[] = [
+                        'id' => $id++,
+                        'text' => 'Available Time',
+                        'start' => date('Y-m-d', $startOfWeek).'T'.$time['start'],
+                        'end' => date('Y-m-d', $startOfWeek).'T'.$time['end'],
+                    ];
+                }
+                $startOfWeek += 86400;
+            }
+            $startOfWeek = $startOfNextWeek;
+        }
+
+        return view('pages.cal', ['times' => json_encode($convertedTimes), 'filename' => $filename]);
+    }
+
+    public function download($filename)
+    {
+        $headers = array(
+            'Content-Type' => 'application/csv',
+            'Content-Disposition' => 'attachment; filename='.$filename,
+        );
+
+        return Response::download(public_path('reports/'.$filename), $filename, $headers );
     }
 }

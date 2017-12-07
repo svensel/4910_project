@@ -11,31 +11,38 @@ use Illuminate\Support\Facades\Auth;
  * */
 class ModelFinder
 {
-    public static function getCourses(){
+    public static function getCourses()
+    {
         return Auth::user()->courses()->get();
     }
 
-    public static function getAuthUser(){
+    public static function getAuthUser()
+    {
         return Auth::user();
     }
 
-    public static function getCoursesFromUser($user){
+    public static function getCoursesFromUser($user)
+    {
         return $user->courses();
     }
 
-    public static function getAuthUserGroups(){
+    public static function getAuthUserGroups()
+    {
         return Auth::user()->groups()->get();
     }
 
-    public static function getGroupsFromCourse($courseId){
+    public static function getGroupsFromCourse($courseId)
+    {
         return Course::find($courseId)->groups()->get();
     }
 
-    public static function getCourseFromGroup($groupId){
+    public static function getCourseFromGroup($groupId)
+    {
         return Group::find($groupId)->course()->get();
     }
 
-    public static function getUsersFromGroup($groupId){
+    public static function getUsersFromGroup($groupId)
+    {
         return Group::find($groupId)->users()->get();
     }
 }

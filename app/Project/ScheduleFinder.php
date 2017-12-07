@@ -2,15 +2,18 @@
 
 namespace App\Project;
 
+use PHPExcel;
+use PHPExcel_IOFactory;
+
 class ScheduleFinder
 {
     private $times = ['available' => [[[]]]];
     private $allCourses = [];
-    private $googleTimes;
     private $courseDays = ['mon', 'tues', 'wed', 'thur', 'fri'];
-    private $dayIndex = ['Mon' => 0 , 'Tue' => 1, 'Wed' => 2, 'Thu' => 3, 'Fri' => 4];
+    private $dayIndex = ['Mon' => 0 , 'Tue' => 1, 'Wed' => 2, 'Thu' => 3, 'Fri' => 4, 'Sat' => 5, 'Sun' => 6];
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->times['available'][0] = ['day' => 'M','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
         $this->times['available'][1] = ['day' => 'Tu','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
         $this->times['available'][2] = ['day' => 'W','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
@@ -18,15 +21,17 @@ class ScheduleFinder
         $this->times['available'][4] = ['day' => 'F','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
     }
 
-    public function generateCalendar($groupId){
+    public function generateCalendar($groupId)
+    {
         $users = ModelFinder::getUsersFromGroup($groupId);
+        $googleTimes = array();
+
         foreach($users as $user) {
             $coursesToAdd = ModelFinder::getCoursesFromUser($user)->get()->toArray();
             $this->allCourses = array_merge($this->allCourses, $coursesToAdd);
             if ($user->google_cal_access == 1) {
                 $api = new GoogleApi($user->id);
                 $googleTimes = $api->fetch_events();
-                //dd($googleTimes);
             }
         }
 
@@ -40,9 +45,9 @@ class ScheduleFinder
             }
         }
 
+        $this->times['available'][5] = ['day' => 'Sat','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
+        $this->times['available'][6] = ['day' => 'Sun','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
         $week2Times = unserialize(serialize($this->times));
-
-        //dd($week2Times);
 
         foreach($googleTimes[0] as $busyTime){//first week
             $this->trimAvailableTimeWithEvent($busyTime, $this->dayIndex[$busyTime['startDayName']], $this->times);
@@ -55,13 +60,12 @@ class ScheduleFinder
         $combinedTimes = [];
         $combinedTimes[0] = $this->times;
         $combinedTimes[1] = $week2Times;
-        //dd($combinedTimes);
         return $combinedTimes; //combinedTimes[0] is current week, combinedTimes[1] is next week
 
     }
 
-    private function trimAvailableTimeWithEvent($event, $dayIndex, $times){
-        //dd($event);
+    private function trimAvailableTimeWithEvent($event, $dayIndex, &$times)
+    {
         foreach($times['available'][$dayIndex]['times'] as &$availTimeSlot){
             if($this->compareTimeStr($availTimeSlot['start'], $event['startTime']) < 0 &&
                 $this->compareTimeStr($availTimeSlot['end'], $event['endTime']) > 0){ //completely inside (divide)
@@ -81,7 +85,8 @@ class ScheduleFinder
         }
     }
 
-    private function findCourseOverlaps($course, $dayIndex){
+    private function findCourseOverlaps($course, $dayIndex)
+    {
         foreach($this->times['available'][$dayIndex]['times'] as &$availTimeSlot){
             if($this->compareTimeStr($availTimeSlot['start'], $course['start_time']) < 0 &&
                 $this->compareTimeStr($availTimeSlot['end'], $course['end_time']) > 0){ //completely inside (divide)
@@ -101,7 +106,8 @@ class ScheduleFinder
         }
     }
 
-    private  function compareTimeStr($t1, $t2){ // 0 if same, + if t1 is after t2, - if t1 is before t2
+    private  function compareTimeStr($t1, $t2)
+    { // 0 if same, + if t1 is after t2, - if t1 is before t2
         if(intval(substr($t1, 0, 2)) != intval(substr($t2, 0, 2))){
             return intval(substr($t1, 0, 2)) - intval(substr($t2, 0, 2));
         }
@@ -114,58 +120,45 @@ class ScheduleFinder
         return 0;
     }
 
-    public function generateCsv(array $times)
+    public function generateSpreadsheet(array $times, $startDate, $endDate)
     {
-        # sheet row 2
-        $rowNum = 2;
+        $headers = [];
+        $this->times['available'][0] = ['day' => 'M','times' => [['start' => '08:00:00', 'end' => '23:59:00']]];
+        $filename = strtotime(date('d-m-Y H:i:s')).'.xls';
 
-        /** Include PHPExcel */
-        require_once dirname(__FILE__) . '/../Classes/PHPExcel.php';
-
+        for($i = $startDate; $i < $endDate; $i += 86400)
+            $headers[] = date('d-M-Y', $i);
 
         try {
             $csv = new PHPExcel();
-            echo date('H:i:s'), " Add some data", EOL;
+            $csv->getProperties()->setTitle('Group Available Times');
+            $csv->setActiveSheetIndex(0)->fromArray($headers, 'A1');
 
-            # sheet title
-            $csv->getProperties()->setTitle($times['name'] . ' Time sheet');
-            # Option 1 filling in available and unavailable times (going by column)
-            $csv->setActiveSheetIndex(0)
-                ->setCellValue('A2', $times['available'][0] . $times['available'][1])
-                ->setCellValue('B2', $times['unavailable'][0] . $times['unavailable'][1]);
+            $dayNum = 0;
+            foreach($times as $week){
+                $rowNum = 2;
+                foreach($week['available'] as $day){
+                    if($startDate < $endDate){
 
-            # increment down rows on the sheet
-//            for($i = 0; $i < count($times['available']); $i++){
-//                $csv->getActiveSheet()->setCellValue('A'. $rowNum++, $times['available'][0].$times['available'][1]);
-//            }
+                        foreach($day['times'] as $time){
+                            $csv->getActiveSheet()->setCellValueByColumnAndRow($dayNum, $rowNum++, $time['start'].'-'.$time['end']);
+                        }
+                        $rowNum = 2;
+                        $dayNum++;
+                        $startDate += 86400;
+                    }
+                    else
+                        break;
+                }
+            }
 
-            $csv->setActiveSheetIndex(0);
-            header("Pragma: public");
-            header("Expires: 0");
-            header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
-            header("Content-Type: application/force-download");
-            header("Content-Type: application/octet-stream");
-            header("Content-Type: application/download");;
-            header("Content-Disposition: attachment;filename='times'");
-            header("Content-Transfer-Encoding: binary ");
-
-//            $filename = 'text.xlsx';
-//            $objWriter = new PHPExcel_Writer_Excel2007($csv);
-//            $objWriter->save($filename);
-            // Save Excel file
-            /*$objWriter = PHPExcel_IOFactory::createWriter($csv, 'Excel2007');
-            $objWriter->save('php://output');*/
             $objWriter = PHPExcel_IOFactory::createWriter($csv, 'Excel5');
-            $objWriter->save(str_replace('.php', '.xls', __FILE__));
-
-            $objWriter->save(storage_path(‘reports’));
-
+            $objWriter->save(public_path('reports/'.$filename));
 
         } catch (\PHPExcel_Exception $e) {
+            return null;
         }
-        //$writer->save(storage('/reports/filename.xls);
-        # saving as excel file
-        // Set active sheet index to the first sheet, so Excel opens this as the first sheet
 
+        return $filename;
     }
 }
